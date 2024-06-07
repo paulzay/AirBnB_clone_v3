@@ -84,3 +84,10 @@ class DBStorage:
             for clss in classes:
                 count += self.__session.query(classes[clss]).count()
         return count
+    
+    def get(self, cls, id):
+        """retrieve one object"""
+        if cls is not None and id is not None:
+            key = cls + '.' + id
+            return self.__session.query(cls).get(id)
+        return None
