@@ -4,8 +4,8 @@
 from api.v1.views import app_views
 from flask import abort, request, Response
 from models import storage
-from models.place import Place
 from models.city import City
+from models.place import Place
 
 
 @app_views.get("/cities/<city_id>/places", strict_slashes=False)
