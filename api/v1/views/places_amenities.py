@@ -2,78 +2,92 @@
 """Contains REST endpoints for Amenities objects"""
 
 from api.v1.views import app_views
-from flask import abort, request, Response
+from flask import abort
 from models import storage
 from models.amenity import Amenity
+from models.place import Place
+from models import storage_t
 
 
-@app_views.get("/amenities", strict_slashes=False)
-def all_amenities():
+@app_views.get("/places/<place_id>/amenities", strict_slashes=False)
+def get_amenities(place_id):
     """Returns all Amenity objects"""
-    amenities = [obj.to_dict() for obj in storage.all(Amenity).values()]
+    if storage_t == "db":
+        place = storage.get(Place, place_id)
+        if not place:
+            abort(404)
+
+        amenities = [amenity.to_dict() for amenity in place.amenities]
+    else:
+        amenities = [amenity.to_dict() for amenity in storage.all(Amenity).values()]
 
     return amenities
 
 
-@app_views.get("/amenities/<amenity_id>", strict_slashes=False)
-def single_amenity(amenity_id):
-    """Returns a single amenity"""
-    amenity = storage.get(Amenity, amenity_id)
-    if not amenity:
-        abort(404)
+@app_views.delete("/places/<place_id>/amenities/<amenity_id>", strict_slashes=False)
+def delete_amenity_to_place(amenity_id, place_id):
+    """Deletes an Amenity object from a Place object"""
+    if storage_t == "db":
+        place = storage.get(Place, place_id)
+        if not place:
+            abort(404)
 
-    return amenity.to_dict()
+        amenity = storage.get(Amenity, amenity_id)
+        if not amenity:
+            abort(404)
 
+        if amenity not in place.amenities:
+            abort(404)
 
-@app_views.post("/amenities/", strict_slashes=False)
-def create_amenity():
-    """Creates a Amenity object"""
+        place.amenities.remove(amenity)
+        storage.save()
+    else:
+        place = storage.get(Place, place_id)
+        if not place:
+            abort(404)
 
-    amenity_dict = request.get_json(silent=True)
-    if not amenity_dict:
-        abort(Response("Not a JSON", 400))
+        amenity = storage.get(Amenity, amenity_id)
+        if not amenity:
+            abort(404)
 
-    if "name" not in amenity_dict:
-        abort(Response("Missing name", 400))
+        if amenity not in place.amenities:
+            abort(404)
 
-    amenity = Amenity(**amenity_dict)
-    storage.new(amenity)
-    storage.save()
+        place.amenities.remove(amenity)
+        storage.save()
+        
+    return {}, 200
+
+@app_views.post("/places/<place_id>/amenities/<amenity_id>", strict_slashes=False)
+def link_amenity(amenity_id, place_id):
+    """Links an Amenity object to a Place object"""
+    if storage_t == "db":
+        amenity = storage.get(Amenity, amenity_id)
+        if not amenity:
+            abort(404)
+
+        place = storage.get(Place, place_id)
+        if not place:
+            abort(404)
+
+        if amenity in place.amenities:
+            return amenity.to_dict(), 200
+
+        place.amenities.append(amenity)
+        storage.save()
+    else:
+        amenity = storage.get(Amenity, amenity_id)
+        if not amenity:
+            abort(404)
+
+        place = storage.get(Place, place_id)
+        if not place:
+            abort(404)
+
+        if amenity in place.amenities:
+            return amenity.to_dict(), 200
+
+        place.amenities.append(amenity)
+        storage.save()
 
     return amenity.to_dict(), 201
-
-
-@app_views.put("/amenities/<amenity_id>", strict_slashes=False)
-def update_amenity(amenity_id):
-    """Updates a Amenity object"""
-
-    amenity = storage.get(Amenity, amenity_id)
-    if not amenity:
-        abort(404)
-
-    amenity_dict = request.get_json(silent=True)
-    if not amenity_dict:
-        abort(Response("Not a JSON", 400))
-
-    ignore = ["id", "created_at", "updated_at"]
-    for attr, val in amenity_dict.items():
-        if attr not in ignore:
-            setattr(amenity, attr, val)
-
-    storage.save()
-
-    return amenity.to_dict(), 200
-
-
-@app_views.delete("/amenities/<amenity_id>", strict_slashes=False)
-def delete_amenity(amenity_id):
-    """Deletes an Amenity object"""
-
-    amenity = storage.get(Amenity, amenity_id)
-    if not amenity:
-        abort(404)
-
-    storage.delete(amenity)
-    storage.save()
-
-    return {}, 200
