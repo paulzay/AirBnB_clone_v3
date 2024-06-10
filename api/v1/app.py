@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""Starts a Flask web application"""
+"""Starts a Flask web application
+"""
 
 from api.v1.views import app_views
 from flask import Flask
