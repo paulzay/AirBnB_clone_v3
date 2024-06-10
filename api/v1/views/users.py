@@ -28,7 +28,6 @@ def single_user(user_id):
 @app_views.post("/users/", strict_slashes=False)
 def create_user():
     """Creates a User object"""
-
     user_dict = request.get_json(silent=True)
     if not user_dict:
         abort(Response("Not a JSON", 400))
