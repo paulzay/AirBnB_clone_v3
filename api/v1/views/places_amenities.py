@@ -19,12 +19,14 @@ def get_amenities(place_id):
 
         amenities = [amenity.to_dict() for amenity in place.amenities]
     else:
-        amenities = [amenity.to_dict() for amenity in storage.all(Amenity).values()]
+        amenities = [amenity.to_dict()
+                     for amenity in storage.all(Amenity).values()]
 
     return amenities
 
 
-@app_views.delete("/places/<place_id>/amenities/<amenity_id>", strict_slashes=False)
+@app_views.delete("/places/<place_id>/amenities/<amenity_id>",
+                  strict_slashes=False)
 def delete_amenity_to_place(amenity_id, place_id):
     """Deletes an Amenity object from a Place object"""
     if storage_t == "db":
@@ -55,10 +57,12 @@ def delete_amenity_to_place(amenity_id, place_id):
 
         place.amenities.remove(amenity)
         storage.save()
-        
+
     return {}, 200
 
-@app_views.post("/places/<place_id>/amenities/<amenity_id>", strict_slashes=False)
+
+@app_views.post("/places/<place_id>/amenities/<amenity_id>",
+                strict_slashes=False)
 def link_amenity(amenity_id, place_id):
     """Links an Amenity object to a Place object"""
     if storage_t == "db":
