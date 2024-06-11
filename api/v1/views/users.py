@@ -39,7 +39,8 @@ def create_user():
         abort(Response("Missing password", 400))
 
     user = User(**user_dict)
-    user.save()
+    storage.new(user)
+    storage.save()
 
     return user.to_dict(), 201
 
