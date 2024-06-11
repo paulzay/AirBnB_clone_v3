@@ -7,7 +7,7 @@ from models import storage
 from models.state import State
 
 
-@app_views.get("/states", strict_slashes=False)
+@app_views.route("/states", methods=["GET"])
 def all_states():
     """Returns all State objects"""
     states = [st.to_dict() for st in storage.all(State).values()]
@@ -15,7 +15,7 @@ def all_states():
     return states
 
 
-@app_views.get("/states/<state_id>", strict_slashes=False)
+@app_views.route("/states/<state_id>", methods=["GET"])
 def single_state(state_id):
     """Returns a single state"""
     state = storage.get(State, state_id)
@@ -25,7 +25,7 @@ def single_state(state_id):
     return state.to_dict()
 
 
-@app_views.post("/states/", strict_slashes=False)
+@app_views.route("/states/", methods=["POST"])
 def create_state():
     """Creates a State object"""
 
@@ -43,7 +43,7 @@ def create_state():
     return state.to_dict(), 201
 
 
-@app_views.put("/states/<state_id>", strict_slashes=False)
+@app_views.route("/states/<state_id>", methods=["PUT"])
 def update_state(state_id):
     """Updates a State object"""
 
@@ -64,7 +64,7 @@ def update_state(state_id):
     return state.to_dict(), 200
 
 
-@app_views.delete("/states/<state_id>", strict_slashes=False)
+@app_views.route("/states/<state_id>", methods=["DELETE"])
 def delete_state(state_id):
     """Deletes a single state"""
     state = storage.get(State, state_id)

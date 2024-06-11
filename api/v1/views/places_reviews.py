@@ -8,7 +8,7 @@ from models.place import Place
 from models.review import Review
 
 
-@app_views.get("/places/<place_id>/reviews", strict_slashes=False)
+@app_views.route("/places/<place_id>/reviews", methods=['GET'])
 def all_reviews(place_id):
     """Returns all Review objects"""
     place = storage.get(Place, place_id)
@@ -19,7 +19,7 @@ def all_reviews(place_id):
     return reviews
 
 
-@app_views.get("/reviews/<review_id>", strict_slashes=False)
+@app_views.route("/reviews/<review_id>", methods=['GET'])
 def review(review_id):
     """Returns a single review"""
     review = storage.get(Review, review_id)
@@ -29,7 +29,7 @@ def review(review_id):
     return review.to_dict()
 
 
-@app_views.delete("/reviews/<review_id>", strict_slashes=False)
+@app_views.route("/reviews/<review_id>", methods=['DELETE'])
 def delete_review(review_id):
     """Deletes a review"""
     review = storage.get(Review, review_id)
@@ -42,7 +42,7 @@ def delete_review(review_id):
     return {}, 200
 
 
-@app_views.post("/places/<place_id>/reviews", strict_slashes=False)
+@app_views.route("/places/<place_id>/reviews", methods=['POST'])
 def create_review(place_id):
     """Creates a Review object"""
 
@@ -68,7 +68,7 @@ def create_review(place_id):
     return review.to_dict(), 201
 
 
-@app_views.put("/reviews/<review_id>", strict_slashes=False)
+@app_views.route("/reviews/<review_id>", methods=['PUT'])
 def update_review(review_id):
     """Updates a Review object"""
 

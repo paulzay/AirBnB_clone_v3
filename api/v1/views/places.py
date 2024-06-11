@@ -8,7 +8,7 @@ from models.city import City
 from models.place import Place
 
 
-@app_views.get("/cities/<city_id>/places", strict_slashes=False)
+@app_views.route("/cities/<city_id>/places")
 def all_places(city_id):
     """Returns all Place objects"""
     city = storage.get(City, city_id)
@@ -19,7 +19,7 @@ def all_places(city_id):
     return places
 
 
-@app_views.get("/places/<place_id>", strict_slashes=False)
+@app_views.route("/places/<place_id>")
 def place(place_id):
     """Returns a single place"""
     place = storage.get(Place, place_id)
@@ -29,7 +29,7 @@ def place(place_id):
     return place.to_dict()
 
 
-@app_views.delete("/places/<place_id>", strict_slashes=False)
+@app_views.route("/places/<place_id>", methods=['DELETE'])
 def delete_place(place_id):
     """Deletes a place"""
     place = storage.get(Place, place_id)
@@ -42,7 +42,7 @@ def delete_place(place_id):
     return {}, 200
 
 
-@app_views.post("/cities/<city_id>/places", strict_slashes=False)
+@app_views.route("/cities/<city_id>/places", methods=['POST'])
 def create_place(city_id):
     """Creates a Place object"""
 
@@ -68,7 +68,7 @@ def create_place(city_id):
     return place.to_dict(), 201
 
 
-@app_views.put("/places/<place_id>", strict_slashes=False)
+@app_views.route("/places/<place_id>", methods=['PUT'])
 def update_place(place_id):
     """Updates a Place object"""
     place = storage.get(Place, place_id)

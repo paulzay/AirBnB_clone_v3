@@ -8,7 +8,7 @@ from models.state import State
 from models.city import City
 
 
-@app_views.get("/states/<state_id>/cities", strict_slashes=False)
+@app_views.route("/states/<state_id>/cities", methods=['GET'])
 def all_state_cities(state_id):
     """Returns all City objects of a State"""
     state = storage.get(State, state_id)
@@ -20,7 +20,7 @@ def all_state_cities(state_id):
     return cities
 
 
-@app_views.get("/cities/<city_id>", strict_slashes=False)
+@app_views.route("/cities/<city_id>", methods=['GET'])
 def single_city(city_id):
     """Returns a single City"""
     city = storage.get(City, city_id)
@@ -30,7 +30,7 @@ def single_city(city_id):
     return city.to_dict()
 
 
-@app_views.post("/states/<state_id>/cities", strict_slashes=False)
+@app_views.route("/states/<state_id>/cities", methods=['POST'])
 def create_city(state_id):
     """Creates a City object"""
 
@@ -53,7 +53,7 @@ def create_city(state_id):
     return city.to_dict(), 201
 
 
-@app_views.put("/cities/<city_id>", strict_slashes=False)
+@app_views.route("/cities/<city_id>", methods=['PUT'])
 def update_city(city_id):
     """Updates a City object"""
 
@@ -74,7 +74,7 @@ def update_city(city_id):
     return city.to_dict(), 200
 
 
-@app_views.delete("/cities/<city_id>", strict_slashes=False)
+@app_views.route("/cities/<city_id>",methods=['DELETE'])
 def delete_city(city_id):
     """Deletes a single city"""
     city = storage.get(City, city_id)

@@ -7,7 +7,7 @@ from models import storage
 from models.amenity import Amenity
 
 
-@app_views.get("/amenities", strict_slashes=False)
+@app_views.route("/amenities", methods=['GET'])
 def all_amenities():
     """Returns all Amenity objects"""
     amenities = [obj.to_dict() for obj in storage.all(Amenity).values()]
@@ -15,7 +15,7 @@ def all_amenities():
     return amenities
 
 
-@app_views.get("/amenities/<amenity_id>", strict_slashes=False)
+@app_views.route("/amenities/<amenity_id>", methods=['GET'])
 def single_amenity(amenity_id):
     """Returns a single amenity"""
     amenity = storage.get(Amenity, amenity_id)
@@ -25,7 +25,7 @@ def single_amenity(amenity_id):
     return amenity.to_dict()
 
 
-@app_views.post("/amenities/", strict_slashes=False)
+@app_views.route("/amenities/", methods=['POST'])
 def create_amenity():
     """Creates a Amenity object"""
 
@@ -43,7 +43,7 @@ def create_amenity():
     return amenity.to_dict(), 201
 
 
-@app_views.put("/amenities/<amenity_id>", strict_slashes=False)
+@app_views.route("/amenities/<amenity_id>", methods=['PUT'])
 def update_amenity(amenity_id):
     """Updates a Amenity object"""
 
@@ -64,7 +64,7 @@ def update_amenity(amenity_id):
     return amenity.to_dict(), 200
 
 
-@app_views.delete("/amenities/<amenity_id>", strict_slashes=False)
+@app_views.route("/amenities/<amenity_id>", methods=['DELETE'])
 def delete_amenity(amenity_id):
     """Deletes a single amenity"""
     amenity = storage.get(Amenity, amenity_id)

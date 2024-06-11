@@ -7,7 +7,7 @@ from models import storage
 from models.user import User
 
 
-@app_views.get("/users", strict_slashes=False)
+@app_views.route("/users", methods=["GET"])
 def all_users():
     """Returns all User objects"""
     users = [u.to_dict() for u in storage.all(User).values()]
@@ -15,7 +15,7 @@ def all_users():
     return users
 
 
-@app_views.get("/users/<user_id>", strict_slashes=False)
+@app_views.route("/users/<user_id>", methods=["GET"])
 def single_user(user_id):
     """Returns a single user"""
     user = storage.get(User, user_id)
@@ -25,7 +25,7 @@ def single_user(user_id):
     return user.to_dict()
 
 
-@app_views.post("/users/", strict_slashes=False)
+@app_views.route("/users/", methods=["POST"])
 def create_user():
     """Creates a User object"""
     user_dict = request.get_json(silent=True)
@@ -44,7 +44,7 @@ def create_user():
     return user.to_dict(), 201
 
 
-@app_views.put("/users/<user_id>", strict_slashes=False)
+@app_views.route("/users/<user_id>", methods=["PUT"])
 def update_user(user_id):
     """Updates a User object"""
 
@@ -65,7 +65,7 @@ def update_user(user_id):
     return user.to_dict(), 200
 
 
-@app_views.delete("/users/<user_id>", strict_slashes=False)
+@app_views.route("/users/<user_id>", methods=["DELETE"])
 def delete_user(user_id):
     """Deletes a single user"""
     user = storage.get(User, user_id)
