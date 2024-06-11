@@ -2,7 +2,7 @@
 """Contains REST endpoints for User objects"""
 
 from api.v1.views import app_views
-from flask import abort, request, Response
+from flask import abort, jsonify, request, Response
 from models import storage
 from models.user import User
 
@@ -12,7 +12,7 @@ def all_users():
     """Returns all User objects"""
     users = [u.to_dict() for u in storage.all(User).values()]
 
-    return users
+    return jsonify(users)
 
 
 @app_views.route("/users/<user_id>", methods=["GET"])
