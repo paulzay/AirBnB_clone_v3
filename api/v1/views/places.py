@@ -6,9 +6,9 @@ from flask import abort, request, Response
 from models import storage
 from models.city import City
 from models.place import Place
+from models.user import User
 
-
-@app_views.route("/cities/<city_id>/places")
+@app_views.route("/cities/<city_id>/places", methods=['GET'])
 def all_places(city_id):
     """Returns all Place objects"""
     city = storage.get(City, city_id)
@@ -19,7 +19,7 @@ def all_places(city_id):
     return places
 
 
-@app_views.route("/places/<place_id>")
+@app_views.route("/places/<place_id>", methods=['GET'])
 def place(place_id):
     """Returns a single place"""
     place = storage.get(Place, place_id)
@@ -56,6 +56,10 @@ def create_place(city_id):
 
     if "user_id" not in place_dict:
         abort(Response("Missing user_id", 400))
+    
+    user = storage.get(User, place_dict['user_id'])
+    if not user:
+        abort(404)
 
     if "name" not in place_dict:
         abort(Response("Missing name", 400))
@@ -79,7 +83,7 @@ def update_place(place_id):
     if not place_dict:
         abort(Response("Not a JSON", 400))
 
-    ignore = ["id", "user_id", "city_id", "created", "updated_at"]
+    ignore = ["id", "user_id", "city_id", "created_at", "updated_at"]
     for attr, val in place_dict.items():
         if attr not in ignore:
             setattr(place, attr, val)
