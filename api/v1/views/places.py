@@ -2,7 +2,7 @@
 """Contains REST endpoints for Place objects"""
 
 from api.v1.views import app_views
-from flask import abort, request, Response
+from flask import abort, jsonify, request, Response
 from models import storage, storage_t
 from models.city import City
 from models.place import Place
@@ -25,7 +25,7 @@ def all_places(city_id):
             if place.city_id == city_id
         ]
 
-    return places
+    return jsonify(places)
 
 
 @app_views.route("/places/<place_id>", methods=["GET"])
