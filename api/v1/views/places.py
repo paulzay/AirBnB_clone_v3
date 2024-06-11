@@ -3,23 +3,32 @@
 
 from api.v1.views import app_views
 from flask import abort, request, Response
-from models import storage
+from models import storage, storage_t
 from models.city import City
 from models.place import Place
 from models.user import User
 
-@app_views.route("/cities/<city_id>/places", methods=['GET'])
+
+@app_views.route("/cities/<city_id>/places", methods=["GET"])
 def all_places(city_id):
     """Returns all Place objects"""
     city = storage.get(City, city_id)
     if not city:
         abort(404)
-    places = [place.to_dict() for place in city.places]
+    places = []
+    if storage_t == "db":
+        places = [place.to_dict() for place in city.places]
+    else:
+        places = [
+            place.to_dict()
+            for place in storage.all(Place).values()
+            if place.city_id == city_id
+        ]
 
     return places
 
 
-@app_views.route("/places/<place_id>", methods=['GET'])
+@app_views.route("/places/<place_id>", methods=["GET"])
 def place(place_id):
     """Returns a single place"""
     place = storage.get(Place, place_id)
@@ -29,7 +38,7 @@ def place(place_id):
     return place.to_dict()
 
 
-@app_views.route("/places/<place_id>", methods=['DELETE'])
+@app_views.route("/places/<place_id>", methods=["DELETE"])
 def delete_place(place_id):
     """Deletes a place"""
     place = storage.get(Place, place_id)
@@ -42,7 +51,7 @@ def delete_place(place_id):
     return {}, 200
 
 
-@app_views.route("/cities/<city_id>/places", methods=['POST'])
+@app_views.route("/cities/<city_id>/places", methods=["POST"])
 def create_place(city_id):
     """Creates a Place object"""
 
@@ -56,8 +65,8 @@ def create_place(city_id):
 
     if "user_id" not in place_dict:
         abort(Response("Missing user_id", 400))
-    
-    user = storage.get(User, place_dict['user_id'])
+
+    user = storage.get(User, place_dict["user_id"])
     if not user:
         abort(404)
 
@@ -72,7 +81,7 @@ def create_place(city_id):
     return place.to_dict(), 201
 
 
-@app_views.route("/places/<place_id>", methods=['PUT'])
+@app_views.route("/places/<place_id>", methods=["PUT"])
 def update_place(place_id):
     """Updates a Place object"""
     place = storage.get(Place, place_id)
