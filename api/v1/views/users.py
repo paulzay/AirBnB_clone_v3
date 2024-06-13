@@ -22,7 +22,7 @@ def single_user(user_id):
     if not user:
         abort(404)
 
-    return user.to_dict()
+    return jsonify(user.to_dict())
 
 
 @app_views.route("/users/", methods=["POST"])
@@ -42,7 +42,7 @@ def create_user():
     storage.new(user)
     storage.save()
 
-    return user.to_dict(), 201
+    return make_response(jsonify(user.to_dict()), 201)
 
 
 @app_views.route("/users/<user_id>", methods=["PUT"])
@@ -76,4 +76,4 @@ def delete_user(user_id):
     storage.delete(user)
     storage.save()
 
-    return {}, 200
+    return make_response(jsonify({}), 200)
