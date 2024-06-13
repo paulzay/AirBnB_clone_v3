@@ -2,7 +2,7 @@
 """Contains REST endpoints for User objects"""
 
 from api.v1.views import app_views
-from flask import abort, jsonify, request, Response
+from flask import abort, jsonify, make_response, request
 from models import storage
 from models.user import User
 
@@ -63,7 +63,7 @@ def update_user(user_id):
             setattr(user, attr, val)
     storage.save()
 
-    return user.to_dict(), 200
+    return make_response(jsonify(user.to_dict()), 200)
 
 
 @app_views.route("/users/<user_id>", methods=["DELETE"])
