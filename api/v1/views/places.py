@@ -2,7 +2,7 @@
 """Contains REST endpoints for Place objects"""
 
 from api.v1.views import app_views
-from flask import abort, jsonify, request, Response
+from flask import abort, jsonify, request, Response, make_response
 from models import storage, storage_t
 from models.city import City
 from models.place import Place
@@ -35,8 +35,7 @@ def place(place_id):
     if not place:
         abort(404)
 
-    return place.to_dict()
-
+    return jsonify(place.to_dict())
 
 @app_views.route("/places/<place_id>", methods=["DELETE"])
 def delete_place(place_id):
@@ -48,7 +47,7 @@ def delete_place(place_id):
     storage.delete(place)
     storage.save()
 
-    return {}, 200
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route("/cities/<city_id>/places", methods=["POST"])
@@ -78,7 +77,7 @@ def create_place(city_id):
     storage.new(place)
     storage.save()
 
-    return place.to_dict(), 201
+    return make_response(jsonify(place.to_dict()), 201)
 
 
 @app_views.route("/places/<place_id>", methods=["PUT"])
@@ -98,4 +97,4 @@ def update_place(place_id):
             setattr(place, attr, val)
     storage.save()
 
-    return place.to_dict(), 200
+    return make_response(jsonify(place.to_dict()), 200)
