@@ -22,7 +22,6 @@ def all_places(city_id):
     return jsonify(places)
 
 
-
 @app_views.route("/places/<place_id>", methods=["GET"])
 def place(place_id):
     """Returns a single place"""
